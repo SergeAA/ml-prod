@@ -18,7 +18,7 @@ from .tools import loadDF
 class Model:
     """Create model"""
 
-    def __init__(self, data: pd.DataFrame, model_folder: str, params=None):
+    def __init__(self, data: pd.DataFrame, model_folder: str = 'model', params={}):
         """Init model with specific parameters
         """
 
@@ -26,23 +26,22 @@ class Model:
         self.features_file = model_folder+'/features.pkl'
         self.model = None
         self.features = None
+        self.params = {
+            'max_depth': 3,
+            'n_estimators': 100,
+            'learning_rate': 0.1,
+            'nthread': 5,
+            'subsample': 1.,
+            'colsample_bytree': 0.5,
+            'min_child_weight ':  3,
+            'reg_alpha': 0.,
+            'reg_lambda': 0.,
+            'seed': 42,
+            'missing': 1e10
+        }
 
         if params:
-            self.params = params
-        else:
-            self.params = {
-                'max_depth': 3,
-                'n_estimators': 100,
-                'learning_rate': 0.1,
-                'nthread': 5,
-                'subsample': 1.,
-                'colsample_bytree': 0.5,
-                'min_child_weight ':  3,
-                'reg_alpha': 0.,
-                'reg_lambda': 0.,
-                'seed': 42,
-                'missing': 1e10
-            }
+            self.params.update(params)
 
         self.__loadModel()
 

@@ -41,7 +41,7 @@ class Extractor:
             logging.error('File `%s` not found', self.sample_file)
             raise FileNotFoundError(self.sample_file)
         self.files.remove(self.sample_file)
-        logging.debug('... found these files to proces:\n\t%s', self.files)
+        logging.debug('... found these files to process:\n\t%s', self.files)
 
     def run(self, days: int = 7, intervals: int = 4, addMore: bool = True, addLess: bool = True):
         """Run extraction process and save datasets
@@ -101,15 +101,15 @@ class Extractor:
                 dlog('...... processing found %s features', features)
                 for feature in features:
                     if addLess:
-                        dlog('......... adding less than inteval')
+                        dlog('......... adding %s less than inteval', feature)
                         df_features = addFeature(df_features, data['day_num_before_churn'] < intervals[0][0],
                                                  data, feature, 'less')
                     for i, inter in enumerate(intervals):
-                        dlog('......... adding interval: %s', inter)
+                        dlog('......... adding %s interval: %s', feature, inter)
                         df_features = addFeature(df_features, data['day_num_before_churn'].between(
                             inter[0], inter[1], inclusive=True), data, feature, i+1)
                     if addMore:
-                        dlog('......... adding more than inteval')
+                        dlog('......... adding %s more than inteval', feature)
                         df_features = addFeature(df_features, data['day_num_before_churn'] > intervals[-1][1],
                                                  data, feature, 'more')
 

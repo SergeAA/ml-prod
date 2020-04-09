@@ -90,7 +90,8 @@ class Extractor:
             df = loadDF(source + '/' + f)
             if 'log_dt' not in df.columns:
                 dlog('... STATIC data adding right to dataset, added columns %s', df.columns.drop('user_id').to_list())
-                dataset = pd.merge(dataset, df, how='left', on='user_id')
+                dataset = pd.merge(dataset, df.drop_duplicates('user_id'),
+                                   how='left', on='user_id')
             else:
                 dlog('... DYNAMIC data calculate days num before churn')
                 data = pd.merge(sample[['user_id', 'login_last_dt']], df, on='user_id')

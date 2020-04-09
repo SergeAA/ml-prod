@@ -113,7 +113,7 @@ class Model:
     def __saveModel(self):
         with open(self.model_file, 'wb') as mdf, open(self.features_file, 'wb') as ff:
             pickle.dump(self.model, mdf)
-            pickle.dump(self.features, ff)
+            pickle.dump(self.features if self.features else self.columns, ff)
 
     def __loadModel(self):
         if exists(self.model_file) and exists(self.features_file):
@@ -129,14 +129,16 @@ class Model:
         self.__saveModel()
         return self.model
 
-    def predict(self, test):
+    def __prepare_to_predict(self, test):
         if not self.model:
             raise BaseException('Model is not fit or loaded')
-        X_test = MinMaxScaler().fit_transform(test[self.features])
+        features = self.features if self.features else self.columns
+        return MinMaxScaler().fit_transform(test[features])
+
+    def predict(self, test):
+        X_test = self.__prepare_to_predict(test)
         return self.model.predict(X_test)
 
     def predict_proba(self, test):
-        if not self.model:
-            raise BaseException('Model is not fit or loaded')
-        X_test = MinMaxScaler().fit_transform(test[self.features])
+        X_test = self.__prepare_to_predict(test)
         return self.model.predict_proba(X_test)[:, 1]
